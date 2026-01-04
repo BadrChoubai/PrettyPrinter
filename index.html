@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pretty Printer</title>
+  <style>
+    @font-face {
+      font-family: "Playfair Display Variable";
+      font-style: normal;
+      font-weight: 400 900;
+      font-display: swap;
+      src: url("https://cdn.jsdelivr.net/fontsource/fonts/playfair-display:vf@latest/latin-wght-normal.woff2")
+        format("woff2-variations");
+    }
+
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
+    body { font-family: "Playfair Display Variable", system-ui, serif; font-size: 1rem; line-height: 1.5; }
+    #app { width: 100%; height: 100%; }
+
+    textarea {
+      width: 100%; height: 100%; padding: 3rem;
+      border: none; outline: none;
+      background: transparent; color: inherit;
+      font: inherit; line-height: inherit;
+      resize: none; overflow: auto;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    textarea::placeholder { opacity: 0.4; }
+
+    .print-content { display: none; }
+
+    @media print {
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      @page { margin: 1.25in; }
+      textarea, button { display: none; }
+      .print-content {
+        display: block;
+        font: inherit;
+        font-size: 2rem;
+        line-height: inherit;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    }
+
+    .actions {
+      position: fixed; top: 1rem; right: 1rem;
+      display: flex; gap: 1rem; z-index: 10;
+
+      button {
+        color: #3c70a0;
+      }
+    }
+    button {
+      padding: 0.5rem 1rem; font: inherit; cursor: pointer;
+      border: none; border-radius: 6px;
+      background: #ffffff; color: #000000;
+    }
+  </style>
+</head>
+
+<body>
+  <textarea id="editor" placeholder="Type or paste text here"></textarea>
+
+  <div class="actions">
+    <button id="copy">Copy Share URL</button>
+    <button id="print">Print</button>
+  </div>
+
+  <div class="print-content" id="printContent"></div>
+
+  <script>
+    const editor = document.getElementById("editor");
+    const printContent = document.getElementById("printContent");
+    const copyBtn = document.getElementById("copy");
+    const printBtn = document.getElementById("print");
+
+    // ------------------------
+    // BASE64-URL encode / decode for deterministic share
+    // ------------------------
+    function encodeText(text) {
+      return btoa(unescape(encodeURIComponent(text)))
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+    }
+
+    function decodeText(base64) {
+      return decodeURIComponent(escape(atob(base64)));
+    }
+
+    // ------------------------
+    // Load text from URL fragment
+    // ------------------------
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      try {
+        const decoded = decodeText(hash);
+        editor.value = decoded;
+        printContent.textContent = decoded;
+      } catch (e) {
+        console.warn("Invalid hash in URL:", e);
+      }
+    }
+
+    // ------------------------
+    // Live update for printing
+    // ------------------------
+    editor.addEventListener("input", () => {
+      printContent.textContent = editor.value;
+    });
+
+    // ------------------------
+    // Copy share URL
+    // ------------------------
+    copyBtn.addEventListener("click", () => {
+      const hash = encodeText(editor.value);
+      const url = `${window.location.origin}${window.location.pathname}#${hash}`;
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Share URL copied to clipboard!");
+      });
+    });
+
+    // ------------------------
+    // Print
+    // ------------------------
+    printBtn.addEventListener("click", () => window.print());
+  </script>
+</body>
+
+</html>
