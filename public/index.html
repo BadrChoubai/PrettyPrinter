@@ -292,8 +292,7 @@
 
       updateURL: ({ title, author, text }) => {
         const stateValue = queryParams.create({ title, author, text });
-        const params = new URLSearchParams();
-        params.set('state', stateValue);
+        const params = new URLSearchParams([['state', stateValue]]);
         
         const newURL = `${window.location.pathname}?${params.toString()}`;
         window.history.replaceState(null, '', newURL);
@@ -339,8 +338,7 @@
       
       onCopy: () => {
         const stateValue = queryParams.create(state);
-        const params = new URLSearchParams();
-        params.set('state', stateValue);
+        const params = new URLSearchParams([['state', stateValue]]);
         const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
         navigator.clipboard.writeText(url).then(() => {
           alert('Share URL copied to clipboard!');
