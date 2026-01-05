@@ -35,20 +35,21 @@
       flex-direction: column;
     }
 
+    /* Mobile First */
     .form-container {
-      padding: 1rem;
+      padding: 0.75rem;
       border-bottom: 1px solid #e5e7eb;
       background: #fafaf8;
       display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      align-items: center;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: stretch;
     }
 
     input[type="text"] {
-      padding: 0.75rem;
+      padding: 0.5rem;
       font-family: "Playfair Display Variable", system-ui, serif;
-      font-size: 1.5rem;
+      font-size: 1rem;
       font-weight: 600;
       border: 1px solid #e5e7eb;
       border-radius: 6px;
@@ -56,12 +57,11 @@
     }
 
     #title {
-      flex: 1;
-      min-width: 200px;
+      width: 100%;
     }
 
     #author {
-      min-width: 150px;
+      width: 100%;
     }
 
     input[type="text"]:focus {
@@ -77,12 +77,13 @@
     textarea {
       width: 100%;
       height: 100%;
-      padding: 3rem;
+      padding: 1.5rem;
       border: none;
       outline: none;
       background: transparent;
       color: inherit;
       font: inherit;
+      font-size: 1.25rem;
       line-height: inherit;
       resize: none;
       overflow: auto;
@@ -99,14 +100,14 @@
     }
 
     #contentTitle {
-      font-size: 2rem;
+      font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       line-height: 1.5;
     }
 
     #contentAuthor {
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-style: italic;
       margin-top: 1.5rem;
       display: block;
@@ -114,13 +115,100 @@
     }
 
     #contentText {
-      font-size: 1.4rem;
+      font-size: 1rem;
       line-height: 1.5;
       white-space: pre-wrap;
       word-break: break-word;
     }
 
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      font: inherit;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #3c70a0;
+      transition: background-color 0.2s;
+      width: 100%;
+    }
+
+    #clear {
+      color: #e15a43;
+    }
+
+    button:hover {
+      background: #f0f0f0;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    /* Desktop Breakpoint */
+    @media screen and (min-width: 750px) {
+      .form-container {
+        padding: 1rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      input[type="text"] {
+        padding: 0.75rem;
+        font-size: 1.5rem;
+      }
+
+      #title {
+        flex: 1;
+        min-width: 200px;
+        width: auto;
+      }
+
+      #author {
+        min-width: 150px;
+        width: auto;
+      }
+
+      textarea {
+        padding: 3rem;
+        font-size: 3rem;
+      }
+
+      #contentTitle {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      #contentAuthor {
+        font-size: 1rem;
+      }
+
+      #contentText {
+        font-size: 1.4rem;
+      }
+
+      .actions {
+        flex-direction: row;
+        width: auto;
+      }
+
+      button {
+        width: auto;
+        padding: 0.5rem 1rem;
+      }
+    }
+
     @media print {
+
       html,
       body,
       #app,
@@ -154,42 +242,18 @@
         padding: 0;
       }
     }
-
-    .actions {
-      display: flex;
-      gap: 1rem;
-      z-index: 10;
-    }
-
-    button {
-      padding: 0.5rem 1rem;
-      font: inherit;
-      cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      background: #ffffff;
-      color: #3c70a0;
-      transition: background-color 0.2s;
-    }
-
-    button:hover {
-      background: #f0f0f0;
-    }
-
-    button:active {
-      transform: scale(0.98);
-    }
   </style>
 </head>
 
 <body>
   <div id="app">
-    <div class="form-container">
+    <div print:hidden class="form-container">
       <input type="text" id="title" placeholder="Title (optional)">
       <input type="text" id="author" placeholder="Author (optional)">
       <div class="actions">
         <button id="copy">Copy Share URL</button>
         <button id="print">Print</button>
+        <button id="clear">Clear</button>
       </div>
     </div>
     <div id="editor-container">
@@ -218,6 +282,7 @@
       author: document.getElementById('author'),
       copy: document.getElementById('copy'),
       print: document.getElementById('print'),
+      clear: document.getElementById('clear'),
       contentTitle: document.getElementById('contentTitle'),
       contentText: document.getElementById('contentText'),
       contentAuthor: document.getElementById('contentAuthor')
@@ -229,16 +294,16 @@
         .replace(/\+/g, '-')
         .replace(/\//g, '_')
         .replace(/=+$/, ''),
-      
+
       decode: (base64) => {
         let b64 = base64
-      .replace(/-/g, '+')
-      .replace(/_/g, '/');
+          .replace(/-/g, '+')
+          .replace(/_/g, '/');
 
         while (b64.length % 4) {
           b64 += '=';
         }
-        
+
         return decodeURIComponent(escape(atob(b64)))
       }
     };
@@ -248,14 +313,14 @@
       parse: () => {
         const params = new URLSearchParams(window.location.search);
         const encodedState = params.get('state');
-        
+
         if (!encodedState) {
           return { title: '', author: '', text: '' };
         }
-        
+
         try {
           const parts = encodedState.split('|');
-          
+
           if (parts.length === 3) {
             return {
               title: encoding.decode(parts[0]),
@@ -263,7 +328,7 @@
               text: encoding.decode(parts[2])
             };
           }
-          
+
           if (parts.length === 2) {
             return {
               title: encoding.decode(parts[0]),
@@ -271,7 +336,7 @@
               text: encoding.decode(parts[1])
             };
           }
-          
+
           return {
             title: '',
             author: '',
@@ -290,10 +355,14 @@
         return encoding.encode(text);
       },
 
+      delete: () => {
+        window.history.replaceState(null, '', window.location.pathname);
+      },
+
       updateURL: ({ title, author, text }) => {
         const stateValue = queryParams.create({ title, author, text });
         const params = new URLSearchParams([['state', stateValue]]);
-        
+
         const newURL = `${window.location.pathname}?${params.toString()}`;
         window.history.replaceState(null, '', newURL);
       }
@@ -335,7 +404,7 @@
     // Event handlers
     const handlers = {
       onInput: () => updateAll(),
-      
+
       onCopy: () => {
         const stateValue = queryParams.create(state);
         const params = new URLSearchParams([['state', stateValue]]);
@@ -344,7 +413,14 @@
           alert('Share URL copied to clipboard!');
         });
       },
-      
+
+      onClear: () => {
+        elements.title.value = '';
+        elements.author.value = '';
+        elements.editor.value = '';
+        updateAll(); // This handles state and URL update
+      },
+
       onPrint: () => window.print()
     };
 
@@ -353,6 +429,7 @@
     elements.title.addEventListener('input', handlers.onInput);
     elements.author.addEventListener('input', handlers.onInput);
     elements.copy.addEventListener('click', handlers.onCopy);
+    elements.clear.addEventListener('click', handlers.onClear);
     elements.print.addEventListener('click', handlers.onPrint);
 
     // Initialize
