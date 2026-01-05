@@ -1,475 +1,491 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Create and share beautifully formatted text documents. Perfect for quotes, poems, and creative writing."
+    />
+    <meta
+      name="keywords"
+      content="text editor, share documents, quotes, poetry, writing"
+    />
+    <meta property="og:title" content="Pretty Printer" />
+    <meta
+      property="og:description"
+      content="Create and share beautifully formatted text documents."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://pretty-printer.choubai-badr.workers.dev"
+    />
+    <title>Pretty Printer</title>
+    <style>
+      @font-face {
+        font-family: "Playfair Display Variable";
+        font-style: normal;
+        font-weight: 400 900;
+        font-display: swap;
+        src: url("https://cdn.jsdelivr.net/fontsource/fonts/playfair-display:vf@latest/latin-wght-normal.woff2")
+          format("woff2-variations");
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"
-    content="Create and share beautifully formatted text documents. Perfect for quotes, poems, and creative writing.">
-  <meta name="keywords" content="text editor, share documents, quotes, poetry, writing">
-  <meta property="og:title" content="Pretty Printer">
-  <meta property="og:description" content="Create and share beautifully formatted text documents.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://pretty-printer.choubai-badr.workers.dev">
-  <title>Pretty Printer</title>
-  <style>
-    @font-face {
-      font-family: "Playfair Display Variable";
-      font-style: normal;
-      font-weight: 400 900;
-      font-display: swap;
-      src: url("https://cdn.jsdelivr.net/fontsource/fonts/playfair-display:vf@latest/latin-wght-normal.woff2") format("woff2-variations");
-    }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-    }
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
 
-    *,
-    *::before,
-    *::after {
-      box-sizing: inherit;
-    }
+      body {
+        font-family: "Playfair Display Variable", system-ui, serif;
+        font-size: 1rem;
+        line-height: 1.5;
+      }
 
-    body {
-      font-family: "Playfair Display Variable", system-ui, serif;
-      font-size: 1rem;
-      line-height: 1.5;
-    }
+      #app {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
 
-    #app {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Mobile First */
-    .form-container {
-      padding: 0.75rem;
-      border-bottom: 1px solid #e5e7eb;
-      background: #fafaf8;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      align-items: stretch;
-    }
-
-    input[type="text"] {
-      padding: 0.5rem;
-      font-family: "Playfair Display Variable", system-ui, serif;
-      font-size: 1rem;
-      font-weight: 600;
-      border: 1px solid #e5e7eb;
-      border-radius: 6px;
-      background: white;
-    }
-
-    #title {
-      width: 100%;
-    }
-
-    #author {
-      width: 100%;
-    }
-
-    input[type="text"]:focus {
-      outline: none;
-      border-color: #3c70a0;
-    }
-
-    #editor-container {
-      flex: 1;
-      overflow: hidden;
-    }
-
-    textarea {
-      width: 100%;
-      height: 100%;
-      padding: 1.5rem;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: inherit;
-      font: inherit;
-      font-size: 1.25rem;
-      line-height: inherit;
-      resize: none;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    textarea::placeholder {
-      opacity: 0.4;
-    }
-
-    .print-content {
-      display: none;
-    }
-
-    #contentTitle {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      line-height: 1.5;
-    }
-
-    #contentAuthor {
-      font-size: 0.9rem;
-      font-style: italic;
-      margin-top: 1.5rem;
-      display: block;
-      color: #666;
-    }
-
-    #contentText {
-      font-size: 1rem;
-      line-height: 1.5;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      width: 100%;
-    }
-
-    button {
-      padding: 0.5rem 1rem;
-      font: inherit;
-      cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      background: #ffffff;
-      color: #3c70a0;
-      transition: background-color 0.2s;
-      width: 100%;
-    }
-
-    #clear {
-      color: #e15a43;
-    }
-
-    button:hover {
-      background: #f0f0f0;
-    }
-
-    button:active {
-      transform: scale(0.98);
-    }
-
-    /* Desktop Breakpoint */
-    @media screen and (min-width: 750px) {
+      /* Mobile First */
       .form-container {
-        padding: 1rem;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 1rem;
-        align-items: center;
+        padding: 0.75rem;
+        border-bottom: 1px solid #e5e7eb;
+        background: #fafaf8;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
       }
 
       input[type="text"] {
-        padding: 0.75rem;
-        font-size: 1.5rem;
+        padding: 0.5rem;
+        font-family: "Playfair Display Variable", system-ui, serif;
+        font-size: 1rem;
+        font-weight: 600;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        background: white;
       }
 
       #title {
-        flex: 1;
-        min-width: 200px;
-        width: auto;
+        width: 100%;
       }
 
       #author {
-        min-width: 150px;
-        width: auto;
+        width: 100%;
+      }
+
+      input[type="text"]:focus {
+        outline: none;
+        border-color: #3c70a0;
+      }
+
+      #editor-container {
+        flex: 1;
+        overflow: hidden;
       }
 
       textarea {
-        padding: 3rem;
-        font-size: 3rem;
+        width: 100%;
+        height: 100%;
+        padding: 1.5rem;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-size: 1.25rem;
+        line-height: inherit;
+        resize: none;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
       }
 
-      #contentTitle {
-        font-size: 2rem;
-        margin-bottom: 2rem;
-      }
-
-      #contentAuthor {
-        font-size: 1rem;
-      }
-
-      #contentText {
-        font-size: 1.4rem;
-      }
-
-      .actions {
-        flex-direction: row;
-        width: auto;
-      }
-
-      button {
-        width: auto;
-        padding: 0.5rem 1rem;
-      }
-    }
-
-    @media print {
-
-      html,
-      body,
-      #app,
-      #editor-container {
-        height: auto;
-        margin: 0;
-        padding: 0;
-      }
-
-      * {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-
-      @page {
-        margin: 1.5in;
-      }
-
-      .form-container,
-      textarea,
-      button,
-      .actions {
-        display: none;
+      textarea::placeholder {
+        opacity: 0.4;
       }
 
       .print-content {
-        display: block;
-        font: inherit;
-        line-height: inherit;
-        margin: 0;
-        padding: 0;
+        display: none;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <div id="app">
-    <div print:hidden class="form-container">
-      <input type="text" id="title" placeholder="Title (optional)">
-      <input type="text" id="author" placeholder="Author (optional)">
-      <div class="actions">
-        <button id="copy">Copy Share URL</button>
-        <button id="print">Print</button>
-        <button id="clear">Clear</button>
+      #contentTitle {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+      }
+
+      #contentAuthor {
+        font-size: 0.9rem;
+        font-style: italic;
+        margin-top: 1.5rem;
+        display: block;
+        color: #666;
+      }
+
+      #contentText {
+        font-size: 1rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        font: inherit;
+        cursor: pointer;
+        border: none;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #3c70a0;
+        transition: background-color 0.2s;
+        width: 100%;
+      }
+
+      #clear {
+        color: #e15a43;
+      }
+
+      button:hover {
+        background: #f0f0f0;
+      }
+
+      button:active {
+        transform: scale(0.98);
+      }
+
+      /* Desktop Breakpoint */
+      @media screen and (min-width: 750px) {
+        .form-container {
+          padding: 1rem;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 1rem;
+          align-items: center;
+        }
+
+        input[type="text"] {
+          padding: 0.75rem;
+          font-size: 1.5rem;
+        }
+
+        #title {
+          flex: 1;
+          min-width: 200px;
+          width: auto;
+        }
+
+        #author {
+          min-width: 150px;
+          width: auto;
+        }
+
+        textarea {
+          padding: 3rem;
+          font-size: 3rem;
+        }
+
+        #contentTitle {
+          font-size: 2rem;
+          margin-bottom: 2rem;
+        }
+
+        #contentAuthor {
+          font-size: 1rem;
+        }
+
+        #contentText {
+          font-size: 1.4rem;
+        }
+
+        .actions {
+          flex-direction: row;
+          width: auto;
+        }
+
+        button {
+          width: auto;
+          padding: 0.5rem 1rem;
+        }
+      }
+
+      @media print {
+        html,
+        body,
+        #app,
+        #editor-container {
+          height: auto;
+          margin: 0;
+          padding: 0;
+        }
+
+        * {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        @page {
+          margin: 1.5in;
+        }
+
+        .form-container,
+        textarea,
+        button,
+        .actions {
+          display: none;
+        }
+
+        .print-content {
+          display: block;
+          font: inherit;
+          line-height: inherit;
+          margin: 0;
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <div print:hidden class="form-container">
+        <input type="text" id="title" placeholder="Title (optional)" />
+        <input type="text" id="author" placeholder="Author (optional)" />
+        <div class="actions">
+          <button id="copy">Copy Share URL</button>
+          <button id="print">Print</button>
+          <button id="clear">Clear</button>
+        </div>
+      </div>
+      <div id="editor-container">
+        <textarea id="editor" placeholder="Type or paste text here"></textarea>
       </div>
     </div>
-    <div id="editor-container">
-      <textarea id="editor" placeholder="Type or paste text here"></textarea>
+
+    <div class="print-content" id="printContent">
+      <h1 id="contentTitle"></h1>
+      <p id="contentText"></p>
+      <span id="contentAuthor"></span>
     </div>
-  </div>
 
-  <div class="print-content" id="printContent">
-    <h1 id="contentTitle"></h1>
-    <p id="contentText"></p>
-    <span id="contentAuthor"></span>
-  </div>
+    <script>
+      // State management
+      const state = {
+        title: "",
+        author: "",
+        text: "",
+      };
 
-  <script>
-    // State management
-    const state = {
-      title: '',
-      author: '',
-      text: ''
-    };
+      // DOM elements
+      const elements = {
+        editor: document.getElementById("editor"),
+        title: document.getElementById("title"),
+        author: document.getElementById("author"),
+        copy: document.getElementById("copy"),
+        print: document.getElementById("print"),
+        clear: document.getElementById("clear"),
+        contentTitle: document.getElementById("contentTitle"),
+        contentText: document.getElementById("contentText"),
+        contentAuthor: document.getElementById("contentAuthor"),
+      };
 
-    // DOM elements
-    const elements = {
-      editor: document.getElementById('editor'),
-      title: document.getElementById('title'),
-      author: document.getElementById('author'),
-      copy: document.getElementById('copy'),
-      print: document.getElementById('print'),
-      clear: document.getElementById('clear'),
-      contentTitle: document.getElementById('contentTitle'),
-      contentText: document.getElementById('contentText'),
-      contentAuthor: document.getElementById('contentAuthor')
-    };
+      // Base64 encoding/decoding utilities
+      const encoding = {
+        encode: (text) =>
+          btoa(unescape(encodeURIComponent(text)))
+            .replace(/\+/g, "-")
+            .replace(/\//g, "_")
+            .replace(/=+$/, ""),
 
-    // Base64 encoding/decoding utilities
-    const encoding = {
-      encode: (text) => btoa(unescape(encodeURIComponent(text)))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, ''),
+        decode: (base64) => {
+          let b64 = base64.replace(/-/g, "+").replace(/_/g, "/");
 
-      decode: (base64) => {
-        let b64 = base64
-          .replace(/-/g, '+')
-          .replace(/_/g, '/');
-
-        while (b64.length % 4) {
-          b64 += '=';
-        }
-
-        return decodeURIComponent(escape(atob(b64)))
-      }
-    };
-
-    // Query parameter management
-    const queryParams = {
-      parse: () => {
-        const params = new URLSearchParams(window.location.search);
-        const encodedState = params.get('state');
-
-        if (!encodedState) {
-          return { title: '', author: '', text: '' };
-        }
-
-        try {
-          const parts = encodedState.split('|');
-
-          if (parts.length === 3) {
-            return {
-              title: encoding.decode(parts[0]),
-              author: encoding.decode(parts[1]),
-              text: encoding.decode(parts[2])
-            };
+          while (b64.length % 4) {
+            b64 += "=";
           }
 
-          if (parts.length === 2) {
-            return {
-              title: encoding.decode(parts[0]),
-              author: '',
-              text: encoding.decode(parts[1])
-            };
+          return decodeURIComponent(escape(atob(b64)));
+        },
+      };
+
+      // Query parameter management
+      const queryParams = {
+        parse: () => {
+          const params = new URLSearchParams(window.location.search);
+          const encodedState = params.get("state");
+
+          if (!encodedState) {
+            return { title: "", author: "", text: "" };
           }
 
-          return {
-            title: '',
-            author: '',
-            text: encoding.decode(encodedState)
-          };
-        } catch (e) {
-          console.warn('Failed to parse state from URL:', e);
-          return { title: '', author: '', text: '' };
+          try {
+            const parts = encodedState.split("|");
+
+            if (parts.length === 3) {
+              return {
+                title: encoding.decode(parts[0]),
+                author: encoding.decode(parts[1]),
+                text: encoding.decode(parts[2]),
+              };
+            }
+
+            if (parts.length === 2) {
+              return {
+                title: encoding.decode(parts[0]),
+                author: "",
+                text: encoding.decode(parts[1]),
+              };
+            }
+
+            return {
+              title: "",
+              author: "",
+              text: encoding.decode(encodedState),
+            };
+          } catch (e) {
+            console.warn("Failed to parse state from URL:", e);
+            return { title: "", author: "", text: "" };
+          }
+        },
+
+        create: ({ title, author, text }) => {
+          if (title || author) {
+            return `${encoding.encode(title)}|${encoding.encode(author)}|${encoding.encode(text)}`;
+          }
+          return encoding.encode(text);
+        },
+
+        delete: () => {
+          window.history.replaceState(null, "", window.location.pathname);
+        },
+
+        updateURL: ({ title, author, text }) => {
+          const stateValue = queryParams.create({ title, author, text });
+          const params = new URLSearchParams([["state", stateValue]]);
+
+          const newURL = `${window.location.pathname}?${params.toString()}`;
+          window.history.replaceState(null, "", newURL);
+        },
+      };
+
+      // State updates
+      const updateState = () => {
+        state.title = elements.title.value.trim();
+        state.author = elements.author.value.trim();
+        state.text = elements.editor.value;
+      };
+
+      const updatePrintContent = () => {
+        elements.contentTitle.textContent = state.title;
+        elements.contentText.textContent = state.text;
+        elements.contentAuthor.textContent = state.author
+          ? `— ${state.author}`
+          : "";
+      };
+      const updateDocumentMetadata = () => {
+        let title = "Pretty Printer";
+        if (state.title) {
+          title += ` - ${state.title}`;
         }
-      },
-
-      create: ({ title, author, text }) => {
-        if (title || author) {
-          return `${encoding.encode(title)}|${encoding.encode(author)}|${encoding.encode(text)}`;
+        if (state.author) {
+          title += ` by ${state.author}`;
         }
-        return encoding.encode(text);
-      },
 
-      delete: () => {
-        window.history.replaceState(null, '', window.location.pathname);
-      },
+        // Cap at ~60 chars for better social media display
+        const displayTitle =
+          title.length > 60 ? title.slice(0, 57) + "..." : title;
 
-      updateURL: ({ title, author, text }) => {
-        const stateValue = queryParams.create({ title, author, text });
-        const params = new URLSearchParams([['state', stateValue]]);
+        const description =
+          state.text.slice(0, 160) ||
+          "Create and share beautifully formatted text documents.";
 
-        const newURL = `${window.location.pathname}?${params.toString()}`;
-        window.history.replaceState(null, '', newURL);
-      }
-    };
+        document.title = title; // Full title in browser tab
+        document.querySelector('meta[property="og:title"]').content =
+          displayTitle; // Truncated for social
+        document.querySelector('meta[property="og:description"]').content =
+          description;
+        document.querySelector('meta[name="description"]').content =
+          description;
+      };
 
-    // State updates
-    const updateState = () => {
-      state.title = elements.title.value.trim();
-      state.author = elements.author.value.trim();
-      state.text = elements.editor.value;
-    };
-
-    const updatePrintContent = () => {
-      elements.contentTitle.textContent = state.title;
-      elements.contentText.textContent = state.text;
-      elements.contentAuthor.textContent = state.author ? `— ${state.author}` : '';
-    };
-    const updateDocumentMetadata = () => {
-      let title = 'Pretty Printer';
-      if (state.title) {
-        title += ` - ${state.title}`;
-      }
-      if (state.author) {
-        title += ` by ${state.author}`;
-      }
-
-      // Cap at ~60 chars for better social media display
-      const displayTitle = title.length > 60 ? title.slice(0, 57) + '...' : title;
-
-      const description = state.text.slice(0, 160) || 'Create and share beautifully formatted text documents.';
-
-      document.title = title; // Full title in browser tab
-      document.querySelector('meta[property="og:title"]').content = displayTitle; // Truncated for social
-      document.querySelector('meta[property="og:description"]').content = description;
-      document.querySelector('meta[name="description"]').content = description;
-    };
-
-    const updateAll = () => {
-      updateState();
-      updatePrintContent();
-      updateDocumentMetadata();
-      queryParams.updateURL(state);
-    };
-
-    // Initialize from URL query parameters
-    const initializeFromQueryParams = () => {
-      try {
-        const { title, author, text } = queryParams.parse();
-        elements.title.value = title;
-        elements.author.value = author;
-        elements.editor.value = text;
+      const updateAll = () => {
         updateState();
         updatePrintContent();
         updateDocumentMetadata();
-      } catch (e) {
-        console.warn('Invalid query parameters in URL:', e);
-      }
-    };
+        queryParams.updateURL(state);
+      };
 
-    // Event handlers
-    const handlers = {
-      onInput: () => updateAll(),
+      // Initialize from URL query parameters
+      const initializeFromQueryParams = () => {
+        try {
+          const { title, author, text } = queryParams.parse();
+          elements.title.value = title;
+          elements.author.value = author;
+          elements.editor.value = text;
+          updateState();
+          updatePrintContent();
+          updateDocumentMetadata();
+        } catch (e) {
+          console.warn("Invalid query parameters in URL:", e);
+        }
+      };
 
-      onCopy: () => {
-        const stateValue = queryParams.create(state);
-        const params = new URLSearchParams([['state', stateValue]]);
-        const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-        navigator.clipboard.writeText(url).then(() => {
-          alert('Share URL copied to clipboard!');
-        });
-      },
+      // Event handlers
+      const handlers = {
+        onInput: () => updateAll(),
 
-      onClear: () => {
-        elements.title.value = '';
-        elements.author.value = '';
-        elements.editor.value = '';
-        updateAll();
-      },
+        onCopy: () => {
+          const stateValue = queryParams.create(state);
+          const params = new URLSearchParams([["state", stateValue]]);
+          const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+          navigator.clipboard.writeText(url).then(() => {
+            alert("Share URL copied to clipboard!");
+          });
+        },
 
-      onPrint: () => window.print()
-    };
+        onClear: () => {
+          elements.title.value = "";
+          elements.author.value = "";
+          elements.editor.value = "";
+          updateAll();
+        },
 
-    // Event listeners
-    elements.editor.addEventListener('input', handlers.onInput);
-    elements.title.addEventListener('input', handlers.onInput);
-    elements.author.addEventListener('input', handlers.onInput);
-    elements.copy.addEventListener('click', handlers.onCopy);
-    elements.clear.addEventListener('click', handlers.onClear);
-    elements.print.addEventListener('click', handlers.onPrint);
+        onPrint: () => window.print(),
+      };
 
-    // Initialize
-    initializeFromQueryParams();
-  </script>
-</body>
+      // Event listeners
+      elements.editor.addEventListener("input", handlers.onInput);
+      elements.title.addEventListener("input", handlers.onInput);
+      elements.author.addEventListener("input", handlers.onInput);
+      elements.copy.addEventListener("click", handlers.onCopy);
+      elements.clear.addEventListener("click", handlers.onClear);
+      elements.print.addEventListener("click", handlers.onPrint);
 
+      // Initialize
+      initializeFromQueryParams();
+    </script>
+  </body>
 </html>
