@@ -4,6 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Create and share beautifully formatted text documents. Perfect for quotes, poems, and creative writing.">
+  <meta name="keywords" content="text editor, share documents, quotes, poetry, writing">
+  <meta property="og:title" content="Pretty Printer">
+  <meta property="og:description" content="Create and share beautifully formatted text documents.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pretty-printer.choubai-badr.workers.dev">
   <title>Pretty Printer</title>
   <style>
     @font-face {
@@ -387,10 +394,30 @@
       elements.contentText.textContent = state.text;
       elements.contentAuthor.textContent = state.author ? `— ${state.author}` : '';
     };
+    const updateDocumentMetadata = () => {
+      let title = 'Pretty Printer';
+      if (state.title) {
+        title += ` - ${state.title}`;
+      }
+      if (state.author) {
+        title += ` by ${state.author}`;
+      }
+
+      // Cap at ~60 chars for better social media display
+      const displayTitle = title.length > 60 ? title.slice(0, 57) + '...' : title;
+
+      const description = state.text.slice(0, 160) || 'Create and share beautifully formatted text documents.';
+
+      document.title = title; // Full title in browser tab
+      document.querySelector('meta[property="og:title"]').content = displayTitle; // Truncated for social
+      document.querySelector('meta[property="og:description"]').content = description;
+      document.querySelector('meta[name="description"]').content = description;
+    };
 
     const updateAll = () => {
       updateState();
       updatePrintContent();
+      updateDocumentMetadata();
       queryParams.updateURL(state);
     };
 
@@ -403,6 +430,7 @@
         elements.editor.value = text;
         updateState();
         updatePrintContent();
+        updateDocumentMetadata();
       } catch (e) {
         console.warn('Invalid query parameters in URL:', e);
       }
@@ -425,7 +453,7 @@
         elements.title.value = '';
         elements.author.value = '';
         elements.editor.value = '';
-        updateAll(); // This handles state and URL update
+        updateAll();
       },
 
       onPrint: () => window.print()
