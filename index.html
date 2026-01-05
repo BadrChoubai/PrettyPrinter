@@ -11,122 +11,322 @@
       font-style: normal;
       font-weight: 400 900;
       font-display: swap;
-      src: url("https://cdn.jsdelivr.net/fontsource/fonts/playfair-display:vf@latest/latin-wght-normal.woff2")
-        format("woff2-variations");
+      src: url("https://cdn.jsdelivr.net/fontsource/fonts/playfair-display:vf@latest/latin-wght-normal.woff2") format("woff2-variations");
     }
 
-    html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
-    body { font-family: "Playfair Display Variable", system-ui, serif; font-size: 1rem; line-height: 1.5; }
-    #app { width: 100%; height: 100%; }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      font-family: "Playfair Display Variable", system-ui, serif;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    #app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-container {
+      padding: 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      background: #fafaf8;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      padding: 0.75rem;
+      font-family: "Playfair Display Variable", system-ui, serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      background: white;
+    }
+
+    #title {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    #author {
+      min-width: 150px;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #3c70a0;
+    }
+
+    #editor-container {
+      flex: 1;
+      overflow: hidden;
+    }
 
     textarea {
-      width: 100%; height: 100%; padding: 3rem;
-      border: none; outline: none;
-      background: transparent; color: inherit;
-      font: inherit; line-height: inherit;
-      resize: none; overflow: auto;
-      white-space: pre-wrap; word-break: break-word;
+      width: 100%;
+      height: 100%;
+      padding: 3rem;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      line-height: inherit;
+      resize: none;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
-    textarea::placeholder { opacity: 0.4; }
 
-    .print-content { display: none; }
+    textarea::placeholder {
+      opacity: 0.4;
+    }
+
+    .print-content {
+      display: none;
+    }
+
+    #contentTitle {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    #contentAuthor {
+      font-size: 1rem;
+      font-style: italic;
+      margin-top: 1.5rem;
+      display: block;
+      color: #666;
+    }
+
+    #contentText {
+      font-size: 1.4rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
 
     @media print {
-      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      @page { margin: 1.25in; }
-      textarea, button { display: none; }
+      html,
+      body,
+      #app,
+      #editor-container {
+        height: auto;
+        margin: 0;
+        padding: 0;
+      }
+
+      * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      @page {
+        margin: 1.5in;
+      }
+
+      .form-container,
+      textarea,
+      button,
+      .actions {
+        display: none;
+      }
+
       .print-content {
         display: block;
         font: inherit;
-        font-size: 2rem;
         line-height: inherit;
-        white-space: pre-wrap;
-        word-break: break-word;
+        margin: 0;
+        padding: 0;
       }
     }
 
     .actions {
-      position: fixed; top: 1rem; right: 1rem;
-      display: flex; gap: 1rem; z-index: 10;
-
-      button {
-        color: #3c70a0;
-      }
+      display: flex;
+      gap: 1rem;
+      z-index: 10;
     }
+
     button {
-      padding: 0.5rem 1rem; font: inherit; cursor: pointer;
-      border: none; border-radius: 6px;
-      background: #ffffff; color: #000000;
+      padding: 0.5rem 1rem;
+      font: inherit;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #3c70a0;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background: #f0f0f0;
+    }
+
+    button:active {
+      transform: scale(0.98);
     }
   </style>
 </head>
 
 <body>
-  <textarea id="editor" placeholder="Type or paste text here"></textarea>
-
-  <div class="actions">
-    <button id="copy">Copy Share URL</button>
-    <button id="print">Print</button>
+  <div id="app">
+    <div class="form-container">
+      <input type="text" id="title" placeholder="Title (optional)">
+      <input type="text" id="author" placeholder="Author (optional)">
+      <div class="actions">
+        <button id="copy">Copy Share URL</button>
+        <button id="print">Print</button>
+      </div>
+    </div>
+    <div id="editor-container">
+      <textarea id="editor" placeholder="Type or paste text here"></textarea>
+    </div>
   </div>
 
-  <div class="print-content" id="printContent"></div>
+  <div class="print-content" id="printContent">
+    <h1 id="contentTitle"></h1>
+    <p id="contentText"></p>
+    <span id="contentAuthor"></span>
+  </div>
 
   <script>
-    const editor = document.getElementById("editor");
-    const printContent = document.getElementById("printContent");
-    const copyBtn = document.getElementById("copy");
-    const printBtn = document.getElementById("print");
+    // State management
+    const state = {
+      title: '',
+      author: '',
+      text: ''
+    };
 
-    // ------------------------
-    // BASE64-URL encode / decode for deterministic share
-    // ------------------------
-    function encodeText(text) {
-      return btoa(unescape(encodeURIComponent(text)))
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/, "");
-    }
+    // DOM elements
+    const elements = {
+      editor: document.getElementById('editor'),
+      title: document.getElementById('title'),
+      author: document.getElementById('author'),
+      copy: document.getElementById('copy'),
+      print: document.getElementById('print'),
+      contentTitle: document.getElementById('contentTitle'),
+      contentText: document.getElementById('contentText'),
+      contentAuthor: document.getElementById('contentAuthor')
+    };
 
-    function decodeText(base64) {
-      return decodeURIComponent(escape(atob(base64)));
-    }
+    // Base64 encoding/decoding utilities
+    const encoding = {
+      encode: (text) => btoa(unescape(encodeURIComponent(text)))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, ''),
+      
+      decode: (base64) => decodeURIComponent(escape(atob(base64)))
+    };
 
-    // ------------------------
-    // Load text from URL fragment
-    // ------------------------
-    const hash = window.location.hash.slice(1);
-    if (hash) {
-      try {
-        const decoded = decodeText(hash);
-        editor.value = decoded;
-        printContent.textContent = decoded;
-      } catch (e) {
-        console.warn("Invalid hash in URL:", e);
+    // Hash management
+    const hash = {
+      parse: (hashString) => {
+        const parts = hashString.split('|');
+        
+        if (parts.length === 3) {
+          return {
+            title: encoding.decode(parts[0]),
+            author: encoding.decode(parts[1]),
+            text: encoding.decode(parts[2])
+          };
+        }
+        
+        if (parts.length === 2) {
+          return {
+            title: encoding.decode(parts[0]),
+            author: '',
+            text: encoding.decode(parts[1])
+          };
+        }
+        
+        return {
+          title: '',
+          author: '',
+          text: encoding.decode(hashString)
+        };
+      },
+
+      create: ({ title, author, text }) => {
+        if (title || author) {
+          return `${encoding.encode(title)}|${encoding.encode(author)}|${encoding.encode(text)}`;
+        }
+        return encoding.encode(text);
       }
-    }
+    };
 
-    // ------------------------
-    // Live update for printing
-    // ------------------------
-    editor.addEventListener("input", () => {
-      printContent.textContent = editor.value;
-    });
+    // State updates
+    const updateState = () => {
+      state.title = elements.title.value.trim();
+      state.author = elements.author.value.trim();
+      state.text = elements.editor.value;
+    };
 
-    // ------------------------
-    // Copy share URL
-    // ------------------------
-    copyBtn.addEventListener("click", () => {
-      const hash = encodeText(editor.value);
-      const url = `${window.location.origin}${window.location.pathname}#${hash}`;
-      navigator.clipboard.writeText(url).then(() => {
-        alert("Share URL copied to clipboard!");
-      });
-    });
+    const updatePrintContent = () => {
+      elements.contentTitle.textContent = state.title;
+      elements.contentText.textContent = state.text;
+      elements.contentAuthor.textContent = state.author ? `— ${state.author}` : '';
+    };
 
-    // ------------------------
-    // Print
-    // ------------------------
-    printBtn.addEventListener("click", () => window.print());
+    const updateAll = () => {
+      updateState();
+      updatePrintContent();
+    };
+
+    // Initialize from URL hash
+    const initializeFromHash = () => {
+      const hashString = window.location.hash.slice(1);
+      if (!hashString) return;
+
+      try {
+        const { title, author, text } = hash.parse(hashString);
+        elements.title.value = title;
+        elements.author.value = author;
+        elements.editor.value = text;
+        updateAll();
+      } catch (e) {
+        console.warn('Invalid hash in URL:', e);
+      }
+    };
+
+    // Event handlers
+    const handlers = {
+      onInput: () => updateAll(),
+      
+      onCopy: () => {
+        const hashString = hash.create(state);
+        const url = `${window.location.origin}${window.location.pathname}#${hashString}`;
+        navigator.clipboard.writeText(url).then(() => {
+          alert('Share URL copied to clipboard!');
+        });
+      },
+      
+      onPrint: () => window.print()
+    };
+
+    // Event listeners
+    elements.editor.addEventListener('input', handlers.onInput);
+    elements.title.addEventListener('input', handlers.onInput);
+    elements.author.addEventListener('input', handlers.onInput);
+    elements.copy.addEventListener('click', handlers.onCopy);
+    elements.print.addEventListener('click', handlers.onPrint);
+
+    // Initialize
+    initializeFromHash();
   </script>
 </body>
 
