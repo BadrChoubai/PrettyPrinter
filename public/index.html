@@ -243,32 +243,44 @@
       }
     };
 
-    // Hash management
-    const hash = {
-      parse: (hashString) => {
-        const parts = hashString.split('|');
+    // Query parameter management
+    const queryParams = {
+      parse: () => {
+        const params = new URLSearchParams(window.location.search);
+        const encodedState = params.get('state');
         
-        if (parts.length === 3) {
-          return {
-            title: encoding.decode(parts[0]),
-            author: encoding.decode(parts[1]),
-            text: encoding.decode(parts[2])
-          };
+        if (!encodedState) {
+          return { title: '', author: '', text: '' };
         }
         
-        if (parts.length === 2) {
+        try {
+          const parts = encodedState.split('|');
+          
+          if (parts.length === 3) {
+            return {
+              title: encoding.decode(parts[0]),
+              author: encoding.decode(parts[1]),
+              text: encoding.decode(parts[2])
+            };
+          }
+          
+          if (parts.length === 2) {
+            return {
+              title: encoding.decode(parts[0]),
+              author: '',
+              text: encoding.decode(parts[1])
+            };
+          }
+          
           return {
-            title: encoding.decode(parts[0]),
+            title: '',
             author: '',
-            text: encoding.decode(parts[1])
+            text: encoding.decode(encodedState)
           };
+        } catch (e) {
+          console.warn('Failed to parse state from URL:', e);
+          return { title: '', author: '', text: '' };
         }
-        
-        return {
-          title: '',
-          author: '',
-          text: encoding.decode(hashString)
-        };
       },
 
       create: ({ title, author, text }) => {
@@ -276,6 +288,14 @@
           return `${encoding.encode(title)}|${encoding.encode(author)}|${encoding.encode(text)}`;
         }
         return encoding.encode(text);
+      },
+
+      updateURL: ({ title, author, text }) => {
+        const stateValue = queryParams.create({ title, author, text });
+        const params = new URLSearchParams([['state', stateValue]]);
+        
+        const newURL = `${window.location.pathname}?${params.toString()}`;
+        window.history.replaceState(null, '', newURL);
       }
     };
 
@@ -295,21 +315,20 @@
     const updateAll = () => {
       updateState();
       updatePrintContent();
+      queryParams.updateURL(state);
     };
 
-    // Initialize from URL hash
-    const initializeFromHash = () => {
-      const hashString = window.location.hash.slice(1);
-      if (!hashString) return;
-
+    // Initialize from URL query parameters
+    const initializeFromQueryParams = () => {
       try {
-        const { title, author, text } = hash.parse(hashString);
+        const { title, author, text } = queryParams.parse();
         elements.title.value = title;
         elements.author.value = author;
         elements.editor.value = text;
-        updateAll();
+        updateState();
+        updatePrintContent();
       } catch (e) {
-        console.warn('Invalid hash in URL:', e);
+        console.warn('Invalid query parameters in URL:', e);
       }
     };
 
@@ -318,8 +337,9 @@
       onInput: () => updateAll(),
       
       onCopy: () => {
-        const hashString = hash.create(state);
-        const url = `${window.location.origin}${window.location.pathname}#${hashString}`;
+        const stateValue = queryParams.create(state);
+        const params = new URLSearchParams([['state', stateValue]]);
+        const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
         navigator.clipboard.writeText(url).then(() => {
           alert('Share URL copied to clipboard!');
         });
@@ -336,7 +356,7 @@
     elements.print.addEventListener('click', handlers.onPrint);
 
     // Initialize
-    initializeFromHash();
+    initializeFromQueryParams();
   </script>
 </body>
 
