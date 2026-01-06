@@ -18,7 +18,6 @@
   <meta property="og:image:type" content="image/png" />
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-
   <meta name="theme-color" content="#FFFFFF">
   <title>Pretty Printer</title>
   <style>
@@ -28,6 +27,21 @@
       font-weight: 400 900;
       font-display: swap;
       src: url("https://cdn.jsdelivr.net/fontsource/fonts/playfair-display:vf@latest/latin-wght-normal.woff2") format("woff2-variations");
+    }
+
+    @font-face {
+      font-family: 'Inter Variable';
+      font-style: normal;
+      font-display: swap;
+      font-weight: 100 900;
+      src: url(https://cdn.jsdelivr.net/fontsource/fonts/inter:vf@latest/latin-wght-normal.woff2) format('woff2-variations');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    :root {
+      --app-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      --app-font-weight: 400;
+      --app-font-style: normal;
     }
 
     html,
@@ -46,9 +60,11 @@
     }
 
     body {
-      font-family: "Playfair Display Variable", system-ui, serif;
+      font-family: var(--app-font-family);
       font-size: 1rem;
       line-height: 1.5;
+      font-weight: var(--app-font-weight);
+      font-style: var(--app-font-style);
     }
 
     #app {
@@ -71,7 +87,7 @@
 
     input[type="text"] {
       padding: 0.5rem;
-      font-family: "Playfair Display Variable", system-ui, serif;
+      font-family: system-ui;
       font-size: 1rem;
       font-weight: 600;
       border: 1px solid #e5e7eb;
@@ -92,6 +108,59 @@
       border-color: #3c70a0;
     }
 
+    select {
+      padding: 0.5rem;
+      font-family: system-ui;
+      font-size: 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #3c70a0;
+    }
+
+    .font-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      width: 100%;
+    }
+
+    .font-controls select {
+      flex: 1;
+    }
+
+    .style-buttons {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .style-btn {
+      padding: 0.4rem 0.6rem;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      min-width: 2.5rem;
+    }
+
+    .style-btn:hover {
+      border-color: #3c70a0;
+      background: #f0f0f0;
+    }
+
+    .style-btn.active {
+      background: #3c70a0;
+      color: white;
+      border-color: #3c70a0;
+    }
+
     #editor-container {
       flex: 1;
       overflow: hidden;
@@ -106,6 +175,9 @@
       background: transparent;
       color: inherit;
       font: inherit;
+      font-family: var(--app-font-family);
+      font-weight: var(--app-font-weight);
+      font-style: var(--app-font-style);
       font-size: 1.25rem;
       line-height: inherit;
       resize: none;
@@ -155,6 +227,7 @@
     button {
       padding: 0.5rem 1rem;
       font: inherit;
+      font-family: "Inter Variable", var(--app-font-family);
       cursor: pointer;
       border: none;
       border-radius: 6px;
@@ -229,6 +302,15 @@
         width: auto;
         padding: 0.5rem 1rem;
       }
+
+      .font-controls {
+        width: auto;
+        flex: 0 1 auto;
+      }
+
+      .font-controls select {
+        flex: 0 1 auto;
+      }
     }
 
     @media print {
@@ -274,6 +356,16 @@
     <div print:hidden class="form-container">
       <input type="text" id="title" placeholder="Title (optional)" />
       <input type="text" id="author" placeholder="Author (optional)" />
+      <div class="font-controls">
+        <select id="fontSelect">
+          <option value="playfair">Playfair Display</option>
+          <option value="inter">Inter</option>
+        </select>
+        <div class="style-buttons">
+          <button class="style-btn" id="boldBtn" title="Bold">B</button>
+          <button class="style-btn" id="italicBtn" title="Italic">I</button>
+        </div>
+      </div>
     </div>
     <div id="editor-container">
       <textarea id="editor" placeholder="Type or paste text here"></textarea>
@@ -297,6 +389,9 @@
       title: "",
       author: "",
       text: "",
+      font: "playfair",
+      bold: false,
+      italic: false,
     };
 
     // DOM elements
@@ -307,6 +402,9 @@
       copy: document.getElementById("copy"),
       print: document.getElementById("print"),
       clear: document.getElementById("clear"),
+      fontSelect: document.getElementById("fontSelect"),
+      boldBtn: document.getElementById("boldBtn"),
+      italicBtn: document.getElementById("italicBtn"),
       contentTitle: document.getElementById("contentTitle"),
       contentText: document.getElementById("contentText"),
       contentAuthor: document.getElementById("contentAuthor"),
@@ -405,6 +503,7 @@
         ? `— ${state.author}`
         : "";
     };
+
     const updateDocumentMetadata = () => {
       let title = "Pretty Printer";
       if (state.title) {
@@ -414,7 +513,6 @@
         title += ` by ${state.author}`;
       }
 
-      // Cap at ~60 chars for better social media display
       const displayTitle =
         title.length > 60 ? title.slice(0, 57) + "..." : title;
 
@@ -422,19 +520,39 @@
         state.text.slice(0, 160) ||
         "Create and share beautifully formatted text documents.";
 
-      document.title = title; // Full title in browser tab
+      document.title = title;
       document.querySelector('meta[property="og:title"]').content =
-        displayTitle; // Truncated for social
+        displayTitle;
       document.querySelector('meta[property="og:description"]').content =
         description;
       document.querySelector('meta[name="description"]').content =
         description;
     };
 
+    const updateFontStyles = () => {
+      const fontMap = {
+        playfair: '"Playfair Display Variable", system-ui, serif',
+        inter: '"Inter Variable", system-ui, sans-serif',
+      };
+
+      const fontFamily = fontMap[state.font] || fontMap.playfair;
+      const fontWeight = state.bold ? 700 : 400;
+      const fontStyle = state.italic ? "italic" : "normal";
+
+      document.documentElement.style.setProperty("--app-font-family", fontFamily);
+      document.documentElement.style.setProperty("--app-font-weight", fontWeight);
+      document.documentElement.style.setProperty("--app-font-style", fontStyle);
+
+      // Update button active states
+      elements.boldBtn.classList.toggle("active", state.bold);
+      elements.italicBtn.classList.toggle("active", state.italic);
+    };
+
     const updateAll = () => {
       updateState();
       updatePrintContent();
       updateDocumentMetadata();
+      updateFontStyles();
       queryParams.updateURL(state);
     };
 
@@ -484,8 +602,27 @@
     elements.clear.addEventListener("click", handlers.onClear);
     elements.print.addEventListener("click", handlers.onPrint);
 
+    // Font controls
+    elements.fontSelect.addEventListener("change", (e) => {
+      state.font = e.target.value;
+      updateFontStyles();
+    });
+
+    elements.boldBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      state.bold = !state.bold;
+      updateFontStyles();
+    });
+
+    elements.italicBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      state.italic = !state.italic;
+      updateFontStyles();
+    });
+
     // Initialize
     initializeFromQueryParams();
+    updateFontStyles();
   </script>
 </body>
 
