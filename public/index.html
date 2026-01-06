@@ -245,10 +245,18 @@
       * {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+        -webkit-appearance: none;
+        appearance: none;
       }
 
       @page {
         margin: 1.5in;
+        size: auto;
+      }
+
+      /* Remove default headers/footers on iOS */
+      @page :first {
+        margin-top: 0;
       }
 
       .form-container,
