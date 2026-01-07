@@ -74,6 +74,8 @@
       line-height: 1.5;
       font-weight: var(--app-font-weight);
       font-style: var(--app-font-style);
+      background: white;
+      color: #1a1a1a;
     }
 
     #app {
@@ -255,6 +257,86 @@
 
     button:active {
       transform: scale(0.98);
+    }
+
+    /* Dark Mode */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #1a1a1a;
+        color: #e8e8e8;
+      }
+
+      .form-container {
+        border-bottom-color: #333333;
+        background: #242424;
+      }
+
+      input[type="text"] {
+        border-color: #333333;
+        background: #2a2a2a;
+        color: #e8e8e8;
+      }
+
+      input[type="text"]:focus {
+        border-color: #5a8ec4;
+      }
+
+      select {
+        border-color: #333333;
+        background: #2a2a2a;
+        color: #e8e8e8;
+      }
+
+      select:focus {
+        border-color: #5a8ec4;
+      }
+
+      .style-btn {
+        background: #2a2a2a;
+        border-color: #333333;
+        color: #e8e8e8;
+      }
+
+      .style-btn:hover {
+        border-color: #5a8ec4;
+        background: #333333;
+      }
+
+      .style-btn.active {
+        background: #5a8ec4;
+        color: white;
+        border-color: #5a8ec4;
+      }
+
+      textarea {
+        background: transparent;
+        color: #e8e8e8;
+      }
+
+      textarea::placeholder {
+        color: #666666;
+      }
+
+      .actions {
+        border-top-color: #444444;
+      }
+
+      button {
+        background: #2a2a2a;
+        color: #5a8ec4;
+      }
+
+      button:hover {
+        background: #333333;
+      }
+
+      #clear {
+        color: #ff6b5a;
+      }
+
+      #contentAuthor {
+        color: #999999;
+      }
     }
 
     /* Desktop Breakpoint */
@@ -613,7 +695,6 @@
           elements.title.focus();
           return;
         }
-
 
         window.print()
       }
