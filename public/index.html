@@ -235,7 +235,6 @@
 
     button {
       padding: 0.5rem 1rem;
-      font: inherit;
       font-family: "Inter Variable", var(--app-font-family);
       cursor: pointer;
       border: none;
@@ -361,6 +360,9 @@
 
 <body>
   <div id="app">
+    <div id="editor-container">
+      <textarea id="editor" placeholder="Type or paste text here"></textarea>
+    </div>
     <div print:hidden class="form-container">
       <input type="text" id="title" placeholder="Title" />
       <input type="text" id="author" placeholder="Author (optional)" />
@@ -375,9 +377,6 @@
           <button class="style-btn" id="italicBtn" title="Italic">I</button>
         </div>
       </div>
-    </div>
-    <div id="editor-container">
-      <textarea id="editor" placeholder="Type or paste text here"></textarea>
     </div>
     <div class="actions">
       <button id="copy">Share</button>
