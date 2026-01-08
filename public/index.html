@@ -1,747 +1,782 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="canonical"
+      href="https://pretty-printer.choubai-badr.workers.dev"
+    />
+    <meta
+      name="description"
+      content="Create and share beautifully formatted text documents. Perfect for quotes, poems, and creative writing."
+    />
+    <meta
+      name="keywords"
+      content="text editor, share documents, quotes, poetry, writing"
+    />
+    <meta property="og:title" content="Pretty Printer" />
+    <meta
+      property="og:description"
+      content="Create and share beautifully formatted text documents."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://pretty-printer.choubai-badr.workers.dev"
+    />
+    <meta property="og:image" content="/PrettyPrinter.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:type" content="image/png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#FFFFFF" />
+    <title>Pretty Printer</title>
+    <style>
+      @font-face {
+        font-family: "Playfair Display Variable";
+        font-style: normal;
+        font-weight: 400 900;
+        font-display: swap;
+        src: url("https://cdn.jsdelivr.net/fontsource/fonts/playfair-display:vf@latest/latin-wght-normal.woff2")
+          format("woff2-variations");
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="canonical" href="https://pretty-printer.choubai-badr.workers.dev" />
-  <meta name="description"
-    content="Create and share beautifully formatted text documents. Perfect for quotes, poems, and creative writing." />
-  <meta name="keywords" content="text editor, share documents, quotes, poetry, writing" />
-  <meta property="og:title" content="Pretty Printer" />
-  <meta property="og:description" content="Create and share beautifully formatted text documents." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://pretty-printer.choubai-badr.workers.dev" />
-  <meta property="og:image" content="/PrettyPrinter.png" />
-  <meta property="og:image:width" content="512" />
-  <meta property="og:image:height" content="512" />
-  <meta property="og:image:type" content="image/png" />
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <meta name="theme-color" content="#FFFFFF">
-  <title>Pretty Printer</title>
-  <style>
-    @font-face {
-      font-family: "Playfair Display Variable";
-      font-style: normal;
-      font-weight: 400 900;
-      font-display: swap;
-      src: url("https://cdn.jsdelivr.net/fontsource/fonts/playfair-display:vf@latest/latin-wght-normal.woff2") format("woff2-variations");
-    }
+      @font-face {
+        font-family: "Inter Variable";
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 900;
+        src: url(https://cdn.jsdelivr.net/fontsource/fonts/inter:vf@latest/latin-wght-normal.woff2)
+          format("woff2-variations");
+        unicode-range:
+          U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+          U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+          U+2212, U+2215, U+FEFF, U+FFFD;
+      }
 
-    @font-face {
-      font-family: 'Inter Variable';
-      font-style: normal;
-      font-display: swap;
-      font-weight: 100 900;
-      src: url(https://cdn.jsdelivr.net/fontsource/fonts/inter:vf@latest/latin-wght-normal.woff2) format('woff2-variations');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    }
+      @font-face {
+        font-family: "Host Grotesk Variable";
+        font-style: normal;
+        font-display: swap;
+        font-weight: 300 800;
+        src: url(https://cdn.jsdelivr.net/fontsource/fonts/host-grotesk:vf@latest/latin-wght-normal.woff2)
+          format("woff2-variations");
+        unicode-range:
+          U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+          U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+          U+2212, U+2215, U+FEFF, U+FFFD;
+      }
 
-    @font-face {
-      font-family: 'Host Grotesk Variable';
-      font-style: normal;
-      font-display: swap;
-      font-weight: 300 800;
-      src: url(https://cdn.jsdelivr.net/fontsource/fonts/host-grotesk:vf@latest/latin-wght-normal.woff2) format('woff2-variations');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    }
+      /* jetbrains-mono-latin-wght-normal */
+      @font-face {
+        font-family: "JetBrains Mono Variable";
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 800;
+        src: url(https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono:vf@latest/latin-wght-normal.woff2)
+          format("woff2-variations");
+        unicode-range:
+          U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+          U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+          U+2212, U+2215, U+FEFF, U+FFFD;
+      }
 
-        /* jetbrains-mono-latin-wght-normal */
-    @font-face {
-      font-family: 'JetBrains Mono Variable';
-      font-style: normal;
-      font-display: swap;
-      font-weight: 100 800;
-      src: url(https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono:vf@latest/latin-wght-normal.woff2) format('woff2-variations');
-      unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
-    }
+      :root {
+        --app-font-family:
+          system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        --app-font-weight: 400;
+        --app-font-style: normal;
+      }
 
-    :root {
-      --app-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      --app-font-weight: 400;
-      --app-font-style: normal;
-    }
-
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-    }
-
-    *,
-    *::before,
-    *::after {
-      box-sizing: inherit;
-    }
-
-    body {
-      font-family: var(--app-font-family);
-      font-size: 1rem;
-      line-height: 1.5;
-      font-weight: var(--app-font-weight);
-      font-style: var(--app-font-style);
-      background: white;
-      color: #1a1a1a;
-    }
-
-    #app {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Mobile First */
-    .form-container {
-      padding: 0.75rem;
-      border-bottom: 1px solid #e5e7eb;
-      background: #fafaf8;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      align-items: stretch;
-    }
-
-    input[type="text"] {
-      padding: 0.5rem;
-      font-family: system-ui;
-      font-size: 1rem;
-      font-weight: 600;
-      border: 1px solid #e5e7eb;
-      border-radius: 6px;
-      background: white;
-    }
-
-    #title {
-      width: 100%;
-    }
-
-    #author {
-      width: 100%;
-    }
-
-    input[type="text"]:focus {
-      outline: none;
-      border-color: #3c70a0;
-    }
-
-    select {
-      padding: 0.5rem;
-      font-family: system-ui;
-      font-size: 1rem;
-      border: 1px solid #e5e7eb;
-      border-radius: 6px;
-      background: white;
-      cursor: pointer;
-    }
-
-    select:focus {
-      outline: none;
-      border-color: #3c70a0;
-    }
-
-    .font-controls {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      width: 100%;
-    }
-
-    .font-controls select {
-      flex: 1;
-    }
-
-    .style-buttons {
-      display: flex;
-      gap: 0.25rem;
-    }
-
-    .style-btn {
-      padding: 0.4rem 0.6rem;
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s;
-      min-width: 2.5rem;
-    }
-
-    .style-btn:hover {
-      border-color: #3c70a0;
-      background: #f0f0f0;
-    }
-
-    .style-btn.active {
-      background: #3c70a0;
-      color: white;
-      border-color: #3c70a0;
-    }
-
-    #editor-container {
-      flex: 1;
-      overflow: hidden;
-    }
-
-    textarea {
-      width: 100%;
-      height: 100%;
-      padding: 1.5rem;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: inherit;
-      font: inherit;
-      font-family: var(--app-font-family);
-      font-weight: var(--app-font-weight);
-      font-style: var(--app-font-style);
-      font-size: 1.25rem;
-      line-height: inherit;
-      resize: none;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    textarea::placeholder {
-      opacity: 0.4;
-    }
-
-    .print-content {
-      display: none;
-    }
-
-    #contentTitle {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      line-height: 1.5;
-    }
-
-    #contentAuthor {
-      font-size: 0.9rem;
-      font-style: italic;
-      margin-top: 1.5rem;
-      display: block;
-      color: #555555;
-    }
-
-    #contentText {
-      font-size: 1rem;
-      line-height: 1.5;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .actions {
-      border-top: solid 1px #555555;
-      display: flex;
-      gap: 0.5rem;
-      width: 100%;
-      padding: 1rem 0.5rem;
-    }
-
-    button {
-      padding: 0.5rem 1rem;
-      font-size: inherit;
-      font-family: "Inter Variable", var(--app-font-family);
-      cursor: pointer;
-      border: none;
-      background: #ffffff;
-      color: #3c70a0;
-      transition: background-color 0.2s;
-      width: 100%;
-    }
-
-    #clear {
-      color: #e15a43;
-    }
-
-    button:hover {
-      background: #f0f0f0;
-    }
-
-    button:active {
-      transform: scale(0.98);
-    }
-
-    /* Dark Mode */
-    @media (prefers-color-scheme: dark) {
+      html,
       body {
-        background: #1a1a1a;
-        color: #e8e8e8;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
       }
 
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+
+      body {
+        font-family: var(--app-font-family);
+        font-size: 1rem;
+        line-height: 1.5;
+        font-weight: var(--app-font-weight);
+        font-style: var(--app-font-style);
+        background: white;
+        color: #1a1a1a;
+      }
+
+      #app {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Mobile First */
       .form-container {
-        border-bottom-color: #333333;
-        background: #242424;
-      }
-
-      input[type="text"] {
-        border-color: #333333;
-        background: #2a2a2a;
-        color: #e8e8e8;
-      }
-
-      input[type="text"]:focus {
-        border-color: #5a8ec4;
-      }
-
-      select {
-        border-color: #333333;
-        background: #2a2a2a;
-        color: #e8e8e8;
-      }
-
-      select:focus {
-        border-color: #5a8ec4;
-      }
-
-      .style-btn {
-        background: #2a2a2a;
-        border-color: #333333;
-        color: #e8e8e8;
-      }
-
-      .style-btn:hover {
-        border-color: #5a8ec4;
-        background: #333333;
-      }
-
-      .style-btn.active {
-        background: #5a8ec4;
-        color: white;
-        border-color: #5a8ec4;
-      }
-
-      textarea {
-        background: transparent;
-        color: #e8e8e8;
-      }
-
-      textarea::placeholder {
-        color: #666666;
-      }
-
-      .actions {
-        border-top-color: #444444;
-      }
-
-      button {
-        background: #2a2a2a;
-        color: #5a8ec4;
-      }
-
-      button:hover {
-        background: #333333;
-      }
-
-      #clear {
-        color: #ff6b5a;
-      }
-
-      #contentAuthor {
-        color: #999999;
-      }
-    }
-
-    /* Desktop Breakpoint */
-    @media screen and (min-width: 750px) {
-      .form-container {
-        padding: 1rem;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 1rem;
-        align-items: center;
-      }
-
-      input[type="text"] {
         padding: 0.75rem;
-        font-size: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        background: #fafaf8;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+      }
+
+      input[type="text"] {
+        padding: 0.5rem;
+        font-family: system-ui;
+        font-size: 1rem;
+        font-weight: 600;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        background: white;
       }
 
       #title {
-        flex: 1;
-        min-width: 200px;
-        width: auto;
+        width: 100%;
       }
 
       #author {
-        min-width: 150px;
-        width: auto;
+        width: 100%;
       }
 
-      textarea {
-        padding: 3rem;
-        font-size: 3rem;
+      input[type="text"]:focus {
+        outline: none;
+        border-color: #3c70a0;
       }
 
-      #contentTitle {
-        font-size: 2rem;
-        margin-bottom: 2rem;
-      }
-
-      #contentAuthor {
+      select {
+        padding: 0.5rem;
+        font-family: system-ui;
         font-size: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        background: white;
+        cursor: pointer;
       }
 
-      #contentText {
-        font-size: 1.4rem;
-      }
-
-      .actions {
-        flex-direction: row;
-        width: auto;
-      }
-
-      button {
-        width: auto;
-        padding: 0.5rem 1rem;
+      select:focus {
+        outline: none;
+        border-color: #3c70a0;
       }
 
       .font-controls {
-        width: auto;
-        flex: 0 1 auto;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        width: 100%;
       }
 
       .font-controls select {
-        flex: 0 1 auto;
+        flex: 1;
       }
-    }
 
-    @media print {
+      .style-buttons {
+        display: flex;
+        gap: 0.25rem;
+      }
 
-      html,
-      body,
-      #app,
+      .style-btn {
+        padding: 0.4rem 0.6rem;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        min-width: 2.5rem;
+      }
+
+      .style-btn:hover {
+        border-color: #3c70a0;
+        background: #f0f0f0;
+      }
+
+      .style-btn.active {
+        background: #3c70a0;
+        color: white;
+        border-color: #3c70a0;
+      }
+
       #editor-container {
-        height: auto;
-        margin: 0;
-        padding: 0;
+        flex: 1;
+        overflow: hidden;
       }
 
-      * {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+      textarea {
+        width: 100%;
+        height: 100%;
+        padding: 1.5rem;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-family: var(--app-font-family);
+        font-weight: var(--app-font-weight);
+        font-style: var(--app-font-style);
+        font-size: 1.25rem;
+        line-height: inherit;
+        resize: none;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
       }
 
-      @page {
-        margin: 1.5in;
-      }
-
-      .form-container,
-      textarea,
-      button,
-      .actions {
-        display: none;
+      textarea::placeholder {
+        opacity: 0.4;
       }
 
       .print-content {
-        display: block;
-        font: inherit;
-        line-height: inherit;
-        margin: 0;
-        padding: 0;
+        display: none;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <div id="app">
-    <div id="editor-container">
-      <textarea id="editor" placeholder="Type or paste text here"></textarea>
-    </div>
-    <div print:hidden class="form-container">
-      <input type="text" id="title" placeholder="Title" />
-      <input type="text" id="author" placeholder="Author (optional)" />
-      <div class="font-controls">
-        <select id="fontSelect">
-          <option value="playfair">Playfair Display</option>
-          <option value="inter">Inter</option>
-          <option value="host_grotesk">Host Grotesk</option>
-          <option value="jetbrains_mono">Jetbrains Mono</option>
-        </select>
-        <div class="style-buttons">
-          <button class="style-btn" id="boldBtn" title="Bold">B</button>
-          <button class="style-btn" id="italicBtn" title="Italic">I</button>
+      #contentTitle {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+      }
+
+      #contentAuthor {
+        font-size: 0.9rem;
+        font-style: italic;
+        margin-top: 1.5rem;
+        display: block;
+        color: #555555;
+      }
+
+      #contentText {
+        font-size: 1rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .actions {
+        border-top: solid 1px #555555;
+        display: flex;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 1rem 0.5rem;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        font-size: inherit;
+        font-family: "Inter Variable", var(--app-font-family);
+        cursor: pointer;
+        border: none;
+        background: #ffffff;
+        color: #3c70a0;
+        transition: background-color 0.2s;
+        width: 100%;
+      }
+
+      #clear {
+        color: #e15a43;
+      }
+
+      button:hover {
+        background: #f0f0f0;
+      }
+
+      button:active {
+        transform: scale(0.98);
+      }
+
+      /* Dark Mode */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #1a1a1a;
+          color: #e8e8e8;
+        }
+
+        .form-container {
+          border-bottom-color: #333333;
+          background: #242424;
+        }
+
+        input[type="text"] {
+          border-color: #333333;
+          background: #2a2a2a;
+          color: #e8e8e8;
+        }
+
+        input[type="text"]:focus {
+          border-color: #5a8ec4;
+        }
+
+        select {
+          border-color: #333333;
+          background: #2a2a2a;
+          color: #e8e8e8;
+        }
+
+        select:focus {
+          border-color: #5a8ec4;
+        }
+
+        .style-btn {
+          background: #2a2a2a;
+          border-color: #333333;
+          color: #e8e8e8;
+        }
+
+        .style-btn:hover {
+          border-color: #5a8ec4;
+          background: #333333;
+        }
+
+        .style-btn.active {
+          background: #5a8ec4;
+          color: white;
+          border-color: #5a8ec4;
+        }
+
+        textarea {
+          background: transparent;
+          color: #e8e8e8;
+        }
+
+        textarea::placeholder {
+          color: #666666;
+        }
+
+        .actions {
+          border-top-color: #444444;
+        }
+
+        button {
+          background: #2a2a2a;
+          color: #5a8ec4;
+        }
+
+        button:hover {
+          background: #333333;
+        }
+
+        #clear {
+          color: #ff6b5a;
+        }
+
+        #contentAuthor {
+          color: #999999;
+        }
+      }
+
+      /* Desktop Breakpoint */
+      @media screen and (min-width: 750px) {
+        .form-container {
+          padding: 1rem;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 1rem;
+          align-items: center;
+        }
+
+        input[type="text"] {
+          padding: 0.75rem;
+          font-size: 1.5rem;
+        }
+
+        #title {
+          flex: 1;
+          min-width: 200px;
+          width: auto;
+        }
+
+        #author {
+          min-width: 150px;
+          width: auto;
+        }
+
+        textarea {
+          padding: 3rem;
+          font-size: 3rem;
+        }
+
+        #contentTitle {
+          font-size: 2rem;
+          margin-bottom: 2rem;
+        }
+
+        #contentAuthor {
+          font-size: 1rem;
+        }
+
+        #contentText {
+          font-size: 1.4rem;
+        }
+
+        .actions {
+          flex-direction: row;
+          width: auto;
+        }
+
+        button {
+          width: auto;
+          padding: 0.5rem 1rem;
+        }
+
+        .font-controls {
+          width: auto;
+          flex: 0 1 auto;
+        }
+
+        .font-controls select {
+          flex: 0 1 auto;
+        }
+      }
+
+      @media print {
+        html,
+        body,
+        #app,
+        #editor-container {
+          height: auto;
+          margin: 0;
+          padding: 0;
+        }
+
+        * {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        @page {
+          margin: 1.5in;
+        }
+
+        .form-container,
+        textarea,
+        button,
+        .actions {
+          display: none;
+        }
+
+        .print-content {
+          display: block;
+          font: inherit;
+          line-height: inherit;
+          margin: 0;
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <div id="editor-container">
+        <textarea id="editor" placeholder="Type or paste text here"></textarea>
+      </div>
+      <div print:hidden class="form-container">
+        <input type="text" id="title" placeholder="Title" />
+        <input type="text" id="author" placeholder="Author (optional)" />
+        <div class="font-controls">
+          <select id="fontSelect">
+            <option value="playfair">Playfair Display</option>
+            <option value="inter">Inter</option>
+            <option value="host_grotesk">Host Grotesk</option>
+            <option value="jetbrains_mono">Jetbrains Mono</option>
+          </select>
+          <div class="style-buttons">
+            <button class="style-btn" id="boldBtn" title="Bold">B</button>
+            <button class="style-btn" id="italicBtn" title="Italic">I</button>
+          </div>
         </div>
       </div>
+      <div class="actions">
+        <button id="copy">Share</button>
+        <button id="print">Print</button>
+        <button id="clear">Clear</button>
+      </div>
     </div>
-    <div class="actions">
-      <button id="copy">Share</button>
-      <button id="print">Print</button>
-      <button id="clear">Clear</button>
+
+    <div class="print-content" id="printContent">
+      <h1 id="contentTitle"></h1>
+      <p id="contentText"></p>
+      <span id="contentAuthor"></span>
     </div>
-  </div>
 
-  <div class="print-content" id="printContent">
-    <h1 id="contentTitle"></h1>
-    <p id="contentText"></p>
-    <span id="contentAuthor"></span>
-  </div>
-
-  <script>
-    // State management
-    const state = {
-      title: "",
-      author: "",
-      text: "",
-      font: "playfair",
-      bold: false,
-      italic: false,
-    };
-
-    // DOM elements
-    const elements = {
-      editor: document.getElementById("editor"),
-      title: document.getElementById("title"),
-      author: document.getElementById("author"),
-      copy: document.getElementById("copy"),
-      print: document.getElementById("print"),
-      clear: document.getElementById("clear"),
-      fontSelect: document.getElementById("fontSelect"),
-      boldBtn: document.getElementById("boldBtn"),
-      italicBtn: document.getElementById("italicBtn"),
-      contentTitle: document.getElementById("contentTitle"),
-      contentText: document.getElementById("contentText"),
-      contentAuthor: document.getElementById("contentAuthor"),
-    };
-
-    // Base64 encoding/decoding utilities
-    const encoding = {
-      encode: (text) =>
-        btoa(unescape(encodeURIComponent(text)))
-          .replace(/\+/g, "-")
-          .replace(/\//g, "_")
-          .replace(/=+$/, ""),
-
-      decode: (base64) => {
-        let b64 = base64.replace(/-/g, "+").replace(/_/g, "/");
-
-        while (b64.length % 4) {
-          b64 += "=";
-        }
-
-        return decodeURIComponent(escape(atob(b64)));
-      },
-    };
-
-    // Query parameter management
-    const queryParams = {
-      parse: () => {
-        const params = new URLSearchParams(window.location.search);
-        const encodedState = params.get("state");
-
-        if (!encodedState) {
-          return { title: "", author: "", text: "" };
-        }
-
-        try {
-          const parts = encodedState.split("|");
-
-          if (parts.length === 3) {
-            return {
-              title: encoding.decode(parts[0]),
-              author: encoding.decode(parts[1]),
-              text: encoding.decode(parts[2]),
-            };
-          }
-
-          if (parts.length === 2) {
-            return {
-              title: encoding.decode(parts[0]),
-              author: "",
-              text: encoding.decode(parts[1]),
-            };
-          }
-
-          return {
-            title: "",
-            author: "",
-            text: encoding.decode(encodedState),
-          };
-        } catch (e) {
-          console.warn("Failed to parse state from URL:", e);
-          return { title: "", author: "", text: "" };
-        }
-      },
-
-      create: ({ title, author, text }) => {
-        if (title || author) {
-          return `${encoding.encode(title)}|${encoding.encode(author)}|${encoding.encode(text)}`;
-        }
-        return encoding.encode(text);
-      },
-
-      delete: () => {
-        window.history.replaceState(null, "", window.location.pathname);
-      },
-
-      updateURL: ({ title, author, text }) => {
-        const stateValue = queryParams.create({ title, author, text });
-        const params = new URLSearchParams([["state", stateValue]]);
-
-        const newURL = `${window.location.pathname}?${params.toString()}`;
-        window.history.replaceState(null, "", newURL);
-      },
-    };
-
-    // State updates
-    const updateState = () => {
-      state.title = elements.title.value.trim();
-      state.author = elements.author.value.trim();
-      state.text = elements.editor.value;
-    };
-
-    const updatePrintContent = () => {
-      elements.contentTitle.textContent = state.title;
-      elements.contentText.textContent = state.text;
-      elements.contentAuthor.textContent = state.author
-        ? `— ${state.author}`
-        : "";
-    };
-
-    const updateDocumentMetadata = () => {
-      let title = "Pretty Printer";
-      if (state.title) {
-        title += ` - ${state.title}`;
-      }
-      if (state.author) {
-        title += ` by ${state.author}`;
-      }
-
-      const displayTitle =
-        title.length > 60 ? title.slice(0, 57) + "..." : title;
-
-      const description =
-        state.text.slice(0, 160) ||
-        "Create and share beautifully formatted text documents.";
-
-      document.title = title;
-      document.querySelector('meta[property="og:title"]').content =
-        displayTitle;
-      document.querySelector('meta[property="og:description"]').content =
-        description;
-      document.querySelector('meta[name="description"]').content =
-        description;
-    };
-
-    const updateFontStyles = () => {
-      const fontMap = {
-        playfair: '"Playfair Display Variable", system-ui, serif',
-        inter: '"Inter Variable", system-ui, sans-serif',
-        host_grotesk: '"Host Grotesk Variable", system-ui, sans-serif',
-        jetbrains_mono: '"JetBrains Mono Variable", system-ui, sans-serif',
+    <script>
+      // State management
+      const state = {
+        title: "",
+        author: "",
+        text: "",
+        font: "playfair",
+        bold: false,
+        italic: false,
       };
 
-      const fontFamily = fontMap[state.font] || fontMap.playfair;
-      const fontWeight = state.bold ? 700 : 400;
-      const fontStyle = state.italic ? "italic" : "normal";
+      // DOM elements
+      const elements = {
+        editor: document.getElementById("editor"),
+        title: document.getElementById("title"),
+        author: document.getElementById("author"),
+        copy: document.getElementById("copy"),
+        print: document.getElementById("print"),
+        clear: document.getElementById("clear"),
+        fontSelect: document.getElementById("fontSelect"),
+        boldBtn: document.getElementById("boldBtn"),
+        italicBtn: document.getElementById("italicBtn"),
+        contentTitle: document.getElementById("contentTitle"),
+        contentText: document.getElementById("contentText"),
+        contentAuthor: document.getElementById("contentAuthor"),
+      };
 
-      document.documentElement.style.setProperty("--app-font-family", fontFamily);
-      document.documentElement.style.setProperty("--app-font-weight", fontWeight);
-      document.documentElement.style.setProperty("--app-font-style", fontStyle);
+      // Base64 encoding/decoding utilities
+      const encoding = {
+        encode: (text) =>
+          btoa(unescape(encodeURIComponent(text)))
+            .replace(/\+/g, "-")
+            .replace(/\//g, "_")
+            .replace(/=+$/, ""),
 
-      // Update button active states
-      elements.boldBtn.classList.toggle("active", state.bold);
-      elements.italicBtn.classList.toggle("active", state.italic);
-    };
+        decode: (base64) => {
+          let b64 = base64.replace(/-/g, "+").replace(/_/g, "/");
 
-    const updateAll = () => {
-      updateState();
-      updatePrintContent();
-      updateDocumentMetadata();
-      updateFontStyles();
-      queryParams.updateURL(state);
-    };
+          while (b64.length % 4) {
+            b64 += "=";
+          }
 
-    // Initialize from URL query parameters
-    const initializeFromQueryParams = () => {
-      try {
-        const { title, author, text } = queryParams.parse();
-        elements.title.value = title;
-        elements.author.value = author;
-        elements.editor.value = text;
+          return decodeURIComponent(escape(atob(b64)));
+        },
+      };
+
+      // Query parameter management
+      const queryParams = {
+        parse: () => {
+          const params = new URLSearchParams(window.location.search);
+          const encodedState = params.get("state");
+
+          if (!encodedState) {
+            return { title: "", author: "", text: "" };
+          }
+
+          try {
+            const parts = encodedState.split("|");
+
+            if (parts.length === 3) {
+              return {
+                title: encoding.decode(parts[0]),
+                author: encoding.decode(parts[1]),
+                text: encoding.decode(parts[2]),
+              };
+            }
+
+            if (parts.length === 2) {
+              return {
+                title: encoding.decode(parts[0]),
+                author: "",
+                text: encoding.decode(parts[1]),
+              };
+            }
+
+            return {
+              title: "",
+              author: "",
+              text: encoding.decode(encodedState),
+            };
+          } catch (e) {
+            console.warn("Failed to parse state from URL:", e);
+            return { title: "", author: "", text: "" };
+          }
+        },
+
+        create: ({ title, author, text }) => {
+          if (title || author) {
+            return `${encoding.encode(title)}|${encoding.encode(author)}|${encoding.encode(text)}`;
+          }
+          return encoding.encode(text);
+        },
+
+        delete: () => {
+          window.history.replaceState(null, "", window.location.pathname);
+        },
+
+        updateURL: ({ title, author, text }) => {
+          const stateValue = queryParams.create({ title, author, text });
+          const params = new URLSearchParams([["state", stateValue]]);
+
+          const newURL = `${window.location.pathname}?${params.toString()}`;
+          window.history.replaceState(null, "", newURL);
+        },
+      };
+
+      // State updates
+      const updateState = () => {
+        state.title = elements.title.value.trim();
+        state.author = elements.author.value.trim();
+        state.text = elements.editor.value;
+      };
+
+      const updatePrintContent = () => {
+        elements.contentTitle.textContent = state.title;
+        elements.contentText.textContent = state.text;
+        elements.contentAuthor.textContent = state.author
+          ? `— ${state.author}`
+          : "";
+      };
+
+      const updateDocumentMetadata = () => {
+        let title = "Pretty Printer";
+        if (state.title) {
+          title += ` - ${state.title}`;
+        }
+        if (state.author) {
+          title += ` by ${state.author}`;
+        }
+
+        const displayTitle =
+          title.length > 60 ? title.slice(0, 57) + "..." : title;
+
+        const description =
+          state.text.slice(0, 160) ||
+          "Create and share beautifully formatted text documents.";
+
+        document.title = title;
+        document.querySelector('meta[property="og:title"]').content =
+          displayTitle;
+        document.querySelector('meta[property="og:description"]').content =
+          description;
+        document.querySelector('meta[name="description"]').content =
+          description;
+      };
+
+      const updateFontStyles = () => {
+        const fontMap = {
+          playfair: '"Playfair Display Variable", system-ui, serif',
+          inter: '"Inter Variable", system-ui, sans-serif',
+          host_grotesk: '"Host Grotesk Variable", system-ui, sans-serif',
+          jetbrains_mono: '"JetBrains Mono Variable", system-ui, sans-serif',
+        };
+
+        const fontFamily = fontMap[state.font] || fontMap.playfair;
+        const fontWeight = state.bold ? 700 : 400;
+        const fontStyle = state.italic ? "italic" : "normal";
+
+        document.documentElement.style.setProperty(
+          "--app-font-family",
+          fontFamily,
+        );
+        document.documentElement.style.setProperty(
+          "--app-font-weight",
+          fontWeight,
+        );
+        document.documentElement.style.setProperty(
+          "--app-font-style",
+          fontStyle,
+        );
+
+        // Update button active states
+        elements.boldBtn.classList.toggle("active", state.bold);
+        elements.italicBtn.classList.toggle("active", state.italic);
+      };
+
+      const updateAll = () => {
         updateState();
         updatePrintContent();
         updateDocumentMetadata();
-      } catch (e) {
-        console.warn("Invalid query parameters in URL:", e);
-      }
-    };
+        updateFontStyles();
+        queryParams.updateURL(state);
+      };
 
-    // Event handlers
-    const handlers = {
-      onInput: () => updateAll(),
-
-      onCopy: () => {
-        if (!elements.title.value.trim()) {
-          alert("Title is required to share or print.");
-          elements.title.focus();
-          return;
+      // Initialize from URL query parameters
+      const initializeFromQueryParams = () => {
+        try {
+          const { title, author, text } = queryParams.parse();
+          elements.title.value = title;
+          elements.author.value = author;
+          elements.editor.value = text;
+          updateState();
+          updatePrintContent();
+          updateDocumentMetadata();
+        } catch (e) {
+          console.warn("Invalid query parameters in URL:", e);
         }
+      };
 
-        const stateValue = queryParams.create(state);
-        const params = new URLSearchParams([["state", stateValue]]);
-        const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-        navigator.clipboard.writeText(url).then(() => {
-          alert("Share URL copied to clipboard!");
-        });
-      },
+      // Event handlers
+      const handlers = {
+        onInput: () => updateAll(),
 
-      onClear: () => {
-        elements.title.value = "";
-        elements.author.value = "";
-        elements.editor.value = "";
-        updateAll();
-      },
+        onCopy: () => {
+          if (!elements.title.value.trim()) {
+            alert("Title is required to share or print.");
+            elements.title.focus();
+            return;
+          }
 
-      onPrint: () => {
-        if (!elements.title.value.trim()) {
-          alert("Title is required to share or print.");
-          elements.title.focus();
-          return;
-        }
+          const stateValue = queryParams.create(state);
+          const params = new URLSearchParams([["state", stateValue]]);
+          const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+          navigator.clipboard.writeText(url).then(() => {
+            alert("Share URL copied to clipboard!");
+          });
+        },
 
-        window.print()
-      }
-    };
+        onClear: () => {
+          elements.title.value = "";
+          elements.author.value = "";
+          elements.editor.value = "";
+          updateAll();
+        },
 
-    // Event listeners
-    elements.editor.addEventListener("input", handlers.onInput);
-    elements.title.addEventListener("input", handlers.onInput);
-    elements.author.addEventListener("input", handlers.onInput);
-    elements.copy.addEventListener("click", handlers.onCopy);
-    elements.clear.addEventListener("click", handlers.onClear);
-    elements.print.addEventListener("click", handlers.onPrint);
+        onPrint: () => {
+          if (!elements.title.value.trim()) {
+            alert("Title is required to share or print.");
+            elements.title.focus();
+            return;
+          }
 
-    // Font controls
-    elements.fontSelect.addEventListener("change", (e) => {
-      state.font = e.target.value;
+          window.print();
+        },
+      };
+
+      // Event listeners
+      elements.editor.addEventListener("input", handlers.onInput);
+      elements.title.addEventListener("input", handlers.onInput);
+      elements.author.addEventListener("input", handlers.onInput);
+      elements.copy.addEventListener("click", handlers.onCopy);
+      elements.clear.addEventListener("click", handlers.onClear);
+      elements.print.addEventListener("click", handlers.onPrint);
+
+      // Font controls
+      elements.fontSelect.addEventListener("change", (e) => {
+        state.font = e.target.value;
+        updateFontStyles();
+      });
+
+      elements.boldBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        state.bold = !state.bold;
+        updateFontStyles();
+      });
+
+      elements.italicBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        state.italic = !state.italic;
+        updateFontStyles();
+      });
+
+      // Initialize
+      initializeFromQueryParams();
       updateFontStyles();
-    });
-
-    elements.boldBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      state.bold = !state.bold;
-      updateFontStyles();
-    });
-
-    elements.italicBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      state.italic = !state.italic;
-      updateFontStyles();
-    });
-
-    // Initialize
-    initializeFromQueryParams();
-    updateFontStyles();
-  </script>
-</body>
-
+    </script>
+  </body>
 </html>
